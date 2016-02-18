@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.min.js" charset="utf-8"></script>
+    <style type="text/css">
+        body {
+            font: 14px sans-serif;
+        }
+        .axis path, .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+        .bar {
+            fill: steelblue;
+        }
+        .x.axis path {
+            display: none;
+        }
+
+        body > div.tooltips {
+            
+            position: absolute;
+            text-align: center;
+            padding: 1em;
+            font: 1.2em sans-serif;
+            background: #02335D;
+            border: 1px solid #fff;
+            border-radius: 0.8em;
+            pointer-events: none;
+            color: #fff;
+            white-space: no-wrap;
+        }
+    
+        .overlay {
+            fill: none;
+            pointer-events: all;
+        }
+
+        .focus circle{
+            fill: none;
+            stroke: steelblue;
+
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    // Set our margins
+var margin = {
+    top: 20,
+    right: 20,
+    bottom: 90,
+    left: 60
+},
+width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+// Our X scale
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+
+// Our Y scale
+var y = d3.scale.linear()
+    .rangeRound([height, 0]);
+
+// Our color bands
+var color = d3.scale.ordinal()
+    .range(["#97CF50", "#FEBE04", "#DC0201"])
+
+// Use our X scale to set a bottom axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+// Smae for our left axis
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(".2s"));
+
+// Add our chart to the document body
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+data = [{nameOrg:"qw", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст1", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст2", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст3", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст4", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст5", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст6", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст7", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"мой очень длинный текст8", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"6", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"5", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"4", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"3", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"34", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"35", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"q", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
+        {nameOrg:"asdsd sad sd s da", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)}
+        ];
+
+function getRandomInt(min, max)
+{
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+    // Make sure our numbers are really numbers
+    data.forEach(function (d) {
+        d.nameOrg = d.nameOrg;
+        d.val1 = +d.val1;
+        d.val2 = +d.val2;
+        d.val3 = +d.val3;
+    });
+
+
+    // Use our values to set our color bands
+    color.domain(d3.keys(data[0]).filter(function (key) {
+        return key !== "nameOrg";
+    }));
+
+    data.forEach(function (d) {
+        var y0 = 0;
+        d.types = color.domain().map(function (name) {
+            return {
+                name: name,
+                y0: y0,
+                y1: y0 += +d[name]
+            };
+        });
+        d.total = d.types[d.types.length - 1].y1;
+    });
+
+    // Sort by nameOrg
+    /*data.sort(function (a) {
+        return a.nameOrg;
+    });*/
+
+    // Our X domain is our set of nameOrgs
+    x.domain(data.map(function (d) {
+        return d.nameOrg;
+    }));
+
+    // Our Y domain is from zero to our highest total
+    y.domain([0, d3.max(data, function (d) {
+        return d.total;
+    })]);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+            .selectAll("text")  
+             .style("text-anchor", "end")
+             .attr("dx", "-.8em")
+             .attr("dy", ".12em")
+            .attr("transform", "rotate(-25)");;
+
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6);
+        /*.attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Ridership");*/
+
+    var nameOrg = svg.selectAll(".nameOrg")
+        .data(data)
+        .enter().append("g")
+        .attr("class", "g")
+        .attr("transform", function (d) {
+            return "translate(" + x(d.nameOrg) + ",0)";
+        });
+
+    //отрисовка самих столбцов
+    nameOrg.selectAll("rect")
+        .data(function (d) {
+            return d.types;
+        })
+        .enter().append("rect")
+        .attr("width", x.rangeBand())
+        .attr("y", function (d) {
+            return y(d.y1);
+        })
+        .attr("height", function (d) {
+            return y(d.y0) - y(d.y1);
+        })
+        .style("fill", function (d) {
+            return color(d.name);
+        });
+        
+
+
+    //var formatCount = d3.format(",.0f");
+    //.text(function(d) { return formatCount(d.y); });*/
+
+nameOrg.append("text")
+    .attr("x", function(d){return x.rangeBand() / 2; })
+    .attr("y", function(d){return y(d.types[0].y1) ; })
+    .attr("dy", "15px")
+    //.attr("fill", "green")
+    .attr("text-anchor", "middle")
+    .text(function(d) { 
+        if(d.val1 > 0)
+            return d.val1;
+        else
+            return ""; 
+    });
+
+nameOrg.append("text")
+    .attr("x", function(d){return x.rangeBand() / 2; })
+    .attr("y", function(d){return y(d.types[1].y1); })
+    .attr("dy", "15px")
+    //.attr("fill", "yellow")
+    .attr("text-anchor", "middle")
+    .text(function(d) { 
+        if(d.val2 > 0)
+            return d.val2;
+        else
+            return ""; 
+    });
+
+nameOrg.append("text")
+    .attr("x", function(d){return x.rangeBand() / 2; })
+    .attr("y", function(d){return y(d.types[2].y1); })
+    .attr("dy", "15px")
+    //.attr("fill", "red")
+    .attr("text-anchor", "middle")
+    .text(function(d) { 
+        if(d.val3 > 0)
+            return d.val3;
+        else
+            return ""; 
+    });
+
+
+
+    /*var legend = svg.selectAll(".legend")
+        .data(color.domain().slice().reverse())
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function (d, i) {
+        return "translate(0," + i * 20 + ")";
+    });
+
+    legend.append("rect")
+        .attr("x", width - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", color);
+
+    legend.append("text")
+        .attr("x", width - 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text(function (d) {
+        return d;
+        });*/
+</script>
+</body>
+</html>
