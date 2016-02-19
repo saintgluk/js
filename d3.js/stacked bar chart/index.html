@@ -5,35 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="d3.min.js" charset="utf-8"></script>
     <style type="text/css">
-        body {
-            font: 14px sans-serif;
+        .axis line {
+            fill: none;
+            shape-rendering: crispEdges;
         }
-        .axis path, .axis line {
+
+        .axis path{
             fill: none;
             stroke: #000;
             shape-rendering: crispEdges;
         }
+
         .bar {
             fill: steelblue;
         }
+
         .x.axis path {
             display: none;
         }
 
-        body > div.tooltips {
-            
-            position: absolute;
-            text-align: center;
-            padding: 1em;
-            font: 1.2em sans-serif;
-            background: #02335D;
-            border: 1px solid #fff;
-            border-radius: 0.8em;
-            pointer-events: none;
-            color: #fff;
-            white-space: no-wrap;
-        }
-    
         .overlay {
             fill: none;
             pointer-events: all;
@@ -44,10 +34,15 @@
             stroke: steelblue;
 
         }
+
+        .y g line.grid-line{
+            stroke: #ccc
+        }
+
     </style>
 </head>
 <body>
-
+<div class="bar-chart"></div>
 <script>
     // Set our margins
 var margin = {
@@ -83,29 +78,29 @@ var yAxis = d3.svg.axis()
     .tickFormat(d3.format(".2s"));
 
 // Add our chart to the document body
-var svg = d3.select("body").append("svg")
+var svg = d3.select(".bar-chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-data = [{nameOrg:"qw", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст1", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст2", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст3", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст4", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст5", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст6", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст7", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"мой очень длинный текст8", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"6", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"5", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"4", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"3", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"34", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"35", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"q", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)},
-        {nameOrg:"asdsd sad sd s da", val1: getRandomInt(0, 10), val2: getRandomInt(0, 10), val3: getRandomInt(0, 10)}
+data = [{nameOrg:"qw", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст1", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст2", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст3", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст4", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст5", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст6", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст7", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"мой очень длинный текст8", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"6", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"5", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"4", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"3", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"34", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"35", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"q", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+        {nameOrg:"asdsd sad sd s da", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)}
         ];
 
 function getRandomInt(min, max)
@@ -151,18 +146,18 @@ function getRandomInt(min, max)
 
     // Our Y domain is from zero to our highest total
     y.domain([0, d3.max(data, function (d) {
-        return d.total;
+        return d.total + 20;//+20 что бы по ОСи У была чуть выше
     })]);
 
     svg.append("g")
-        .attr("class", "axis")
+        .attr("class", "x-axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
             .selectAll("text")  
              .style("text-anchor", "end")
              .attr("dx", "-.8em")
              .attr("dy", ".12em")
-            .attr("transform", "rotate(-25)");;
+            .attr("transform", "rotate(-25)");
 
 
     svg.append("g")
@@ -174,6 +169,21 @@ function getRandomInt(min, max)
         /*.attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Ridership");*/
+
+    //меняет стили на ОСи Х
+    svg.selectAll('.x-axis line, .x-axis path, .y axis line, .y axis path')
+     .style({'stroke': 'Black', 'fill': 'none', 'stroke-width': '1px'});
+
+
+
+    // рисуем горизонтальные линии 
+d3.selectAll("g")
+    .append("line")
+    .classed("grid-line", true)
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", width)
+    .attr("y2", 0);
 
     var nameOrg = svg.selectAll(".nameOrg")
         .data(data)
@@ -234,7 +244,7 @@ nameOrg.append("text")
 nameOrg.append("text")
     .attr("x", function(d){return x.rangeBand() / 2; })
     .attr("y", function(d){return y(d.types[2].y1); })
-    .attr("dy", "15px")
+    .attr("dy", "5px")
     //.attr("fill", "red")
     .attr("text-anchor", "middle")
     .text(function(d) { 
