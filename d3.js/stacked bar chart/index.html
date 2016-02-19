@@ -4,7 +4,75 @@
     <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="d3.min.js" charset="utf-8"></script>
+    <script src="jquery-1.12.0.min.js"></script>
     <style type="text/css">
+	.filter{
+        color: #91ACB5;
+        padding-left: 25px;
+    }
+
+    h2.ms-webpart-titleText{
+        padding-left: 20px;
+    }
+
+    .filter .perid, .filter .blocks-reports, .filter .on-date{
+        float: left;
+        padding-right: 30px;
+    }
+
+    .filter .delay, .filter .publication{
+        padding-right: 30px;
+    }
+
+    .clear{
+        clear: left;
+    }
+
+    .filter .filter-line2-padding-top{
+        padding-top: 20px; 
+    }
+
+    .filter .float-left{
+        float: left;
+    }
+
+    .filter .elips{
+        width: 30px;
+        height: 5px;
+        border-radius: 10px;
+        border-style: solid;
+        border-width: 3px;
+        margin-top: 3px;
+        margin-right: 5px;
+    }
+
+    .filter .red{
+        background-color: #DC0201;
+        border-color: #DC0201;
+    }
+
+    .filter .green{
+        background-color: #97CF50;
+        border-color: #97CF50;
+    }
+
+    .filter .yellow{
+        background-color: #FEBE04;
+        border-color: #FEBE04;
+    }
+
+    .cursor-pointer{
+        cursor: pointer;
+    }
+	
+	/*-----------*/
+	
+	
+	
+	
+	
+	
+	
         .axis line {
             fill: none;
             shape-rendering: crispEdges;
@@ -39,11 +107,76 @@
             stroke: #ccc
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        .filter .isVisible-false{
+            background-color: white;
+        }
     </style>
 </head>
 <body>
-<div class="bar-chart"></div>
+<div class="statistics">
+    <div class="filter">
+        <div class="perid">
+            период: <asp:Label ID="period" runat="server" ForeColor="#628EED" />
+        </div>
+        <div class="on-date">
+            на дату: <asp:Label ID="onDate" runat="server" ForeColor="#628EED" />
+        </div>
+        <div class="blocks-reports">
+            блоки отчетов: 
+           <asp:ListBox runat="server" SelectionMode="Multiple" ID="blocksReports" placeholder="Hello  im from placeholder" class="SlectBox">
+              <asp:ListItem Text="test1"></asp:ListItem>
+              <asp:ListItem Text="test2"></asp:ListItem>
+              <asp:ListItem Text="test3"></asp:ListItem>
+            </asp:ListBox>
+        </div>
+        <div class="clear filter-line2-padding-top">
+            <div class="float-left">
+                &nbsp;
+                <div class="delay">
+                    Задержка: 
+                </div>
+
+                <div class="publication">
+                    Срок публикации наступил:
+                </div>
+            </div>
+            <div class="float-left">
+                <div class="cursor-pointer btn-select-bar-chart" name="val1" isVisible="true">
+                    <div class="elips green float-left"></div>Вовремя - Опубликован 
+                </div>
+
+                <div class="cursor-pointer btn-select-bar-chart" name="val2" isVisible="true">
+                    <div class="elips yellow float-left"></div>С задержкой - Опубликован 
+                </div>
+                <div class="cursor-pointer btn-select-bar-chart" name="val3" isVisible="true">
+                    <div class="elips red float-left"></div>С задержкой - не опубликован 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bar-chart clear"></div>
 <script>
+startCreateBarChart();
+function createBarChart(arrIsVal) {
     // Set our margins
 var margin = {
     top: 20,
@@ -78,13 +211,13 @@ var yAxis = d3.svg.axis()
     .tickFormat(d3.format(".2s"));
 
 // Add our chart to the document body
-var svg = d3.select(".bar-chart").append("svg")
+ var   svg = d3.select(".bar-chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-data = [{nameOrg:"qw", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
+/*data = [{nameOrg:"qw", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
         {nameOrg:"мой очень длинный текст1", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
         {nameOrg:"мой очень длинный текст2", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
         {nameOrg:"мой очень длинный текст3", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
@@ -101,7 +234,19 @@ data = [{nameOrg:"qw", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), v
         {nameOrg:"35", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
         {nameOrg:"q", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)},
         {nameOrg:"asdsd sad sd s da", val1: getRandomInt(0, 170), val2: getRandomInt(0, 130), val3: getRandomInt(0, 5)}
-        ];
+        ];*/
+
+
+var data = new Array();
+for(var i=0; i < 30; i++)
+    data.push(
+        {
+            nameOrg: "text " + i, 
+            val1: jQuery.inArray( "val1", arrIsVal ) !== -1 ? getRandomInt(0, 170) : 0, 
+            val2: jQuery.inArray( "val2", arrIsVal ) !== -1 ? getRandomInt(0, 130) : 0, 
+            val3: jQuery.inArray( "val3", arrIsVal ) !== -1 ? getRandomInt(0, 5)  : 0
+        }
+    );
 
 function getRandomInt(min, max)
 {
@@ -278,6 +423,31 @@ nameOrg.append("text")
         .text(function (d) {
         return d;
         });*/
+}
+
+
+    $('.btn-select-bar-chart').on('click', function() {
+        var isVisible = $(this).attr("isVisible");
+        if (isVisible === "false"){
+            $(this).attr("isVisible", "true");
+        }
+        else {
+            $(this).attr("isVisible", "false");
+        }
+        $(".elips", this).toggleClass("isVisible-false");
+        startCreateBarChart();
+    });
+
+
+    function startCreateBarChart(){
+        var arr = new Array();
+        $('div.btn-select-bar-chart[isVisible="true"]').each(function(){
+            arr.push($(this).attr("name"));
+        });
+        $('svg').remove();
+        createBarChart(arr);
+    }
+
 </script>
 </body>
 </html>
