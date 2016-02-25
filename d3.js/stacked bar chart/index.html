@@ -291,7 +291,7 @@ function getRandomInt(min, max)
 
     // Our Y domain is from zero to our highest total
     y.domain([0, d3.max(data, function (d) {
-        return d.total + 20;//+20 что бы по ОСи У была чуть выше
+        return d.total + (d.total * 10 / 100);//+20 что бы по ОСи У была чуть выше
     })]);
 
     svg.append("g")
@@ -344,7 +344,8 @@ d3.selectAll("g")
             return d.types;
         })
         .enter().append("rect")
-        .attr("width", x.rangeBand())
+        .attr("width", x.rangeBand()-10)
+        .attr("x", 5)
         .attr("y", function (d) {
             return y(d.y1);
         })
@@ -362,8 +363,11 @@ d3.selectAll("g")
 
 nameOrg.append("text")
     .attr("x", function(d){return x.rangeBand() / 2; })
-    .attr("y", function(d){return y(d.types[0].y1) ; })
-    .attr("dy", "15px")
+    .attr("y", function (d) { return y(d.types[0].y1); })
+    .attr("dy", function (d) {
+        return height - y(d.types[0].y1 - d.types[0].y1 / 2) + 3; 
+    })
+    //.attr("dy", "15px")
     //.attr("fill", "green")
     .attr("text-anchor", "middle")
     .text(function(d) { 
@@ -376,7 +380,9 @@ nameOrg.append("text")
 nameOrg.append("text")
     .attr("x", function(d){return x.rangeBand() / 2; })
     .attr("y", function(d){return y(d.types[1].y1); })
-    .attr("dy", "15px")
+    .attr("dy", function (d) {
+        return height - y(d.types[1].y1 - d.types[0].y1 - (d.types[1].y1 - d.types[0].y1) / 2) + 3;
+    })
     //.attr("fill", "yellow")
     .attr("text-anchor", "middle")
     .text(function(d) { 
@@ -389,7 +395,9 @@ nameOrg.append("text")
 nameOrg.append("text")
     .attr("x", function(d){return x.rangeBand() / 2; })
     .attr("y", function(d){return y(d.types[2].y1); })
-    .attr("dy", "5px")
+    .attr("dy", function (d) {
+        return height - y(d.types[2].y1 - d.types[1].y1 - (d.types[2].y1 - d.types[1].y1)/2) + 3;
+    })
     //.attr("fill", "red")
     .attr("text-anchor", "middle")
     .text(function(d) { 
